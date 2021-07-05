@@ -31,11 +31,10 @@
     "react-native-screens": "^3.4.0",
     "react-native-sound-player": "^0.10.9",
     "react-native-splash-screen": "^3.2.0",
-    "react-native-svg": "^12.1.1",
-    "react-native-svg-animated-linear-gradient": "^0.4.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-webview": "^11.6.4",
     "react-native-youtube": "^2.0.2",
+    "remove": "^0.1.5",
     "rn-placeholder": "^3.0.3",
     "socket.io-client": "^4.1.2"
   },
