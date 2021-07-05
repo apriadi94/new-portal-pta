@@ -24,7 +24,7 @@ const ChatContentScreen = ({ navigation, route }) => {
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
-                <TouchableOpacity onPress={() => navigation.navigate('ChatScreen')}>
+                <TouchableOpacity onPress={() => navigation.navigate(roomId ? 'ChatScreen' : 'ChatContactScreen')}>
                     <View style={{ marginLeft : 25 }}>
                       <Icon name="arrow-left" color="gray" size={18} />
                     </View>
@@ -65,7 +65,7 @@ const ChatContentScreen = ({ navigation, route }) => {
             socket.removeAllListeners("MESSAGE_SENT");
             Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
         })
-    }, [isTyping])
+    }, [isTyping, roomId])
 
 
     const _keyboardDidShow = () => scrollViewRef.current.scrollToEnd({animated: true});
