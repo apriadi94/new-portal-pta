@@ -79,7 +79,7 @@ const ChatContentScreen = ({ navigation, route }) => {
                         }}
                         >
                     {
-                        loadingChat ? <View><Text>Loading...</Text></View> :
+                        loadingChat ? <View  style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text>Loading...</Text></View> :
                         <View style={{flex : 1, marginTop : 10, marginHorizontal : 10, marginBottom : 10}}>
                             {
                                 chat.map((list, index) =>

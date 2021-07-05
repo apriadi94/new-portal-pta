@@ -51,7 +51,7 @@ const ChatScreen = ({ navigation }) => {
     return(
       <ImageBackground source={backgroundChat} style={{flex: 1}}>
       {loading ? (
-        <View>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Text>Loading...</Text>
         </View>
       ) : (
