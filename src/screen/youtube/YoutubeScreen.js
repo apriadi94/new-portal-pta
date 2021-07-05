@@ -1,0 +1,113 @@
+import React, { useState, useEffect, useContext} from 'react'
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios'
+import moment from 'moment'
+import { AuthContext } from '../../provider/AuthProvider'
+import ChatButtonComponent from '../home/ChatButtonComponent';
+
+const YoutubeScreen = ({ navigation }) => {
+    const { countChat } = useContext(AuthContext)
+    const [List, setList] = useState([]);
+    const [nextPageToken, setnextPageToken] = useState('')
+    const [refreshing, setRefreshing] = useState(false);
+    const [Loading, setLoading] = useState(true);
+    const [LoadingMoreData, setLoadingMoreData] = useState(false)
+
+    const GetData = async () => {
+        setLoading(true)
+        await axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyC8avjMSINELXqirk6U5glSkrVpbKKVqt0&channelId=UCk-UO4mjjUY7rCqy8LirRTg&part=snippet,id&order=date`, {
+          headers: {
+            Accept: 'application/json',
+          }
+        })
+          .then(function (response) {
+            setnextPageToken(response.data.nextPageToken)
+            setList(response.data.items);
+          }).catch(e => {
+            alert('Network Error')
+          })
+          setLoading(false)
+    }
+
+    useEffect(() => {
+        navigation.setOptions({
+            title: 'Youtube Chanel',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                  <View style={{ marginLeft : 25 }}>
+                    <Icon name="navicon" color="gray" size={18} />
+                  </View>
+              </TouchableOpacity>
+            ),
+        });
+        GetData();
+    }, [])
+
+    const TambahDataSelanjutnya = async () => {
+        setLoadingMoreData(true);
+        await axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyC8avjMSINELXqirk6U5glSkrVpbKKVqt0&channelId=UCk-UO4mjjUY7rCqy8LirRTg&part=snippet,id&order=date&pageToken=${nextPageToken}`, {
+          headers: {
+            Accept: 'application/json',
+          }
+        })
+          .then(function (response) {
+            setList(List => [...List, ...response.data.items]);
+            setnextPageToken(response.data.nextPageToken)
+          }).catch(e => {
+            alert(e)
+          })
+          setLoadingMoreData(false)
+    }
+
+    const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >=
+          contentSize.height - paddingToBottom;
+      };
+
+    return(
+        <View style={{flex : 1, backgroundColor : '#F3F6FF'}}>
+           {
+               Loading ? <Text>Loading....</Text> :
+               <ScrollView
+               onScroll={({nativeEvent}) => {
+                    if (isCloseToBottom(nativeEvent)) {
+                        TambahDataSelanjutnya()
+                    }
+                }}
+                scrollEventThrottle={400}
+               >
+                   {
+                       List.map((item, index) => 
+                       <TouchableOpacity style={{backgroundColor: '#fff', marginBottom : 10}} key={index} onPress={() => navigation.navigate('Video', {vidID : item.id.videoId, titleVideo : item.snippet.title})}>
+                            <View style={{ marginBottom : 10, marginTop : 10}}>
+                                <View style={{marginHorizontal : 2}}>
+                                    <Image source={{uri : item.snippet.thumbnails.medium.url}} style={{width : '100%', height : 200}}/>
+                                </View>
+                                <View style={{marginHorizontal : 10}}>
+                                    <Text style={{marginTop : 10, fontWeight : 'bold', fontSize : 15, marginBottom : 5}}>{item.snippet.title}</Text>
+                                    <Text>dipublikasikan {moment(item.snippet.publishTime).format('dddd, DD-MMMM-YYYY')}</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                       )
+                   }
+                   {
+                       LoadingMoreData ?
+                       <View style={{height : 50}}>
+                           <Text>Loading...</Text>
+                       </View> : null
+                   }
+               </ScrollView>
+           }
+            {
+                countChat > 0 ? 
+                <ChatButtonComponent navigation={navigation} countChat={countChat}/> 
+                : null
+            }
+        </View>
+    )
+}
+
+export default YoutubeScreen
