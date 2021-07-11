@@ -1,32 +1,43 @@
-import React, { useEffect, useState, createContext } from 'react';
-import socketIOClient from "socket.io-client";
-const ENDPOINT = 'https://chat2.pta-banjarmasin.go.id'
+import React, {useEffect, useState, createContext} from 'react';
+import socketIOClient from 'socket.io-client';
+import {BASE_URL1} from "@env"
+// const ENDPOINT = 'http://192.168.1.4:8010'
+const ENDPOINT = BASE_URL1;
 const socket = socketIOClient(ENDPOINT);
 
 export const ChatContext = createContext();
-export const ChatProvider = ({ user, children }) => {
+export const ChatProvider = ({user, children, navigation}) => {
+  const [userOnline, setUserOnline] = useState([]);
 
-    const auth = {
-        token: 'berenang_renang_ketepian', 
-        userId:  user.idForUser, 
-        username:  user.displayName, 
-        profileImage :  user.photoURL
-    }
+  const auth = {
+    token: 'berenang_renang_ketepian',
+    userId: user.idForUser,
+    username: user.displayName,
+    profileImage: user.photoURL,
+  };
 
-    useEffect(() => {
-        socket.auth = auth;
-        socket.connect();
+  const unsubscribe = navigation.addListener('focus', () => {
+    // The screen is focused
+    // Call any action
+    console.log('focuse');
+  });
 
-        return(() => {
-            socket.disconnect()
-        })
-    }, [])
+  useEffect(() => {
+    socket.auth = auth;
+    socket.connect();
 
-    const chatState = { socket };
+    socket.on('USER_ONLINE', list => {
+      const result = Object.keys(list).map(key => list[key]);
+      console.log(result);
+      setUserOnline(result);
+    });
 
-    return(
-        <ChatContext.Provider value={chatState}>
-            {children}
-        </ChatContext.Provider>
-    )
-}
+    return unsubscribe;
+  }, [navigation]);
+
+  const chatState = {socket, userOnline};
+
+  return (
+    <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>
+  );
+};

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AuthProvider } from './src/provider/AuthProvider';
 import OneSignal from 'react-native-onesignal';
 import MainStack from './src/stack/MainStack';
+import {ONESIGNAL_KEY} from "@env"
 
 export default class App extends Component {
 
@@ -11,7 +12,7 @@ export default class App extends Component {
     OneSignal.setLogLevel(6, 0);
   
     // Replace 'YOUR_ONESIGNAL_APP_ID' with your OneSignal App ID.
-    OneSignal.init("578f30d1-ec07-441b-8257-fd251eeebebc", {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
+    OneSignal.init(ONESIGNAL_KEY, {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
     OneSignal.inFocusDisplaying(0); // Controls what should happen if a notification is received while the app is open. 2 means that the notification will go directly to the device's notification center.
   
     // The promptForPushNotifications function code will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step below)

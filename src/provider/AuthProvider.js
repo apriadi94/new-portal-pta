@@ -3,13 +3,14 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SplashScreen from 'react-native-splash-screen'
 import axios from 'axios';
+import {BASE_URL1, BASE_URL2} from "@env"
 
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     // const baseUrl = 'http://192.168.1.4:8010'
-    const baseUrl = 'https://chat2.pta-banjarmasin.go.id'
-    const baseUrl2 = 'https://cek.pta-banjarmasin.go.id'
+    const baseUrl = BASE_URL1
+    const baseUrl2 = BASE_URL2
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
     const [countChat, setCountChat] = useState(0)
