@@ -47,6 +47,8 @@ const ChatScreen = ({ navigation }) => {
           }
           setLoading(false)
         })
+
+        return(() =>  console.log('disconnect'))
     }, [headerShown, search])
     return(
       <ImageBackground source={backgroundChat} style={{flex: 1}}>
@@ -79,7 +81,7 @@ const ChatScreen = ({ navigation }) => {
                 key={index}
                 onPress={() => {
                   navigation.navigate('ChatContentScreen', { 
-                    to: [{ name: list.room.name }],
+                    to: [{ name: list.room.name, idLogin: list.room.id }],
                     room: { id: list.roomId, name: list.room.name, image: list.room.image }
                   })
                 }}

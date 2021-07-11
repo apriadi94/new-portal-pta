@@ -10,7 +10,7 @@ import SoundPlayer from 'react-native-sound-player'
 
 const ChatContentScreen = ({ navigation, route }) => {
     const { baseUrl, user, getUnreadMessage } = useContext(AuthContext)
-    const { socket } = useContext(ChatContext)
+    const { socket, userOnline } = useContext(ChatContext)
     const { to, room } = route.params;
     const [roomId, setRoomid] = useState(room.id)
     const [chat, setChat] = useState([])
@@ -21,6 +21,7 @@ const ChatContentScreen = ({ navigation, route }) => {
 
     const scrollViewRef = useRef();
 
+
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
@@ -30,7 +31,27 @@ const ChatContentScreen = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
               ),
-            title: isTyping? 'sedang mengetik' : to[0].name
+            headerTitle: () => (
+                <View>
+                    <Text style={{ 
+                        fontWeight : 'bold', color: 'white', fontSize: 20,
+                        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                        textShadowRadius: 10
+                    }}>{to[0].name}</Text>
+                    {
+                        userOnline.includes(to[0].idLogin) ?
+                        <Text style={{ 
+                            color: 'white',
+                            fontWeight: 'bold',
+                            textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                            textShadowRadius: 10 }}>
+                            {
+                                isTyping? 'sedang mengetik...' : 'Online'
+                            }
+                        </Text> : null
+                    }
+                </View>
+            ),
         })
 
         socket.emit('REQUEST_MESSAGE', ({ roomId, to }))
@@ -65,7 +86,7 @@ const ChatContentScreen = ({ navigation, route }) => {
             socket.removeAllListeners("MESSAGE_SENT");
             Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
         })
-    }, [isTyping, roomId])
+    }, [isTyping, roomId, userOnline])
 
 
     const _keyboardDidShow = () => scrollViewRef.current.scrollToEnd({animated: true});

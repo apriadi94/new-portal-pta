@@ -30,10 +30,10 @@ const optionsStyle = {
       }
 }
 
-const ChatStack = () => {
+const ChatStack = ({navigation}) => {
   const { user } = useContext(AuthContext)
     return(
-          <ChatProvider user={user}>
+          <ChatProvider navigation={navigation} user={user}>
             <Stack.Navigator>
                 <Stack.Screen name='ChatScreen' component={ChatScreen} options={{ 
                     ...optionsStyle, 

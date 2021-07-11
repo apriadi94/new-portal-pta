@@ -76,7 +76,7 @@ const ChatContactScreen = ({ navigation }) => {
                 key={index}
                 onPress={() => {
                   navigation.navigate('ChatContentScreen', { 
-                    to: [{ id: list.id, uid: list.uid, name: list.name, profilePicture: list.profilePicture }],
+                    to: [{ id: list.id, uid: list.uid, name: list.name, profilePicture: list.profilePicture, idLogin: list.id }],
                     room: { id: null, name: list.name, image: list.profilePicture }
                   })
                 }}
